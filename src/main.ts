@@ -1,20 +1,20 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestFactory } from "@nestjs/core"
+import { AppModule } from "./app.module"
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger"
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('/api');
+    const app = await NestFactory.create(AppModule)
+    app.setGlobalPrefix("/api")
 
-  const config = new DocumentBuilder()
-    .setTitle('The Hub')
-    .setDescription('The Hub API description')
-    .setVersion('0.1')
-    .build();
+    const config = new DocumentBuilder()
+        .setTitle("The Hub")
+        .setDescription("The Hub API description")
+        .setVersion("0.1")
+        .build()
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup("api", app, document)
 
-  await app.listen(1605);
+    await app.listen(1605)
 }
-bootstrap();
+bootstrap()

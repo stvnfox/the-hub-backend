@@ -1,5 +1,6 @@
-import { Controller, Get, UseGuards } from "@nestjs/common"
+import { Controller, Get, Req, UseGuards } from "@nestjs/common"
 import { ApiTags } from "@nestjs/swagger"
+import { Request } from "express"
 import { GoogleAuthGuard } from "./utils/Guards"
 
 @Controller("auth")
@@ -17,5 +18,15 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
     handleRedirect() {
         return "This route is used to redirect after google login"
+    }
+
+    //api/auth/status
+    @Get("status")
+    user(@Req() request: Request) {
+        if (request.user) {
+            return { msg: "Authenticated" }
+        } else {
+            return { msg: "Not Authenticated" }
+        }
     }
 }

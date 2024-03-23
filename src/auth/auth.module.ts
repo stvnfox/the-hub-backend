@@ -1,9 +1,20 @@
 import { Module } from "@nestjs/common"
+import { PassportModule } from "@nestjs/passport"
 import { AuthController } from "./auth.controller"
+import { AuthService } from "./auth.service"
 import { GoogleStrategy } from "./utils/GoogleStrategy"
+import { SessionSerializer } from "./utils/Serializer"
 
 @Module({
+    imports: [PassportModule],
     controllers: [AuthController],
-    providers: [GoogleStrategy],
+    providers: [
+        GoogleStrategy,
+        SessionSerializer,
+        {
+            provide: "AUTH_SERVICE",
+            useClass: AuthService,
+        },
+    ],
 })
 export class AuthModule {}

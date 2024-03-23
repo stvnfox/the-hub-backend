@@ -13,7 +13,7 @@ async function bootstrap() {
             saveUninitialized: false,
             resave: false,
             cookie: {
-                maxAge: 60000,
+                maxAge: 60000 * 60,
             },
         })
     )
@@ -27,7 +27,7 @@ async function bootstrap() {
         .build()
 
     const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup("api", app, document)
+    SwaggerModule.setup("docs", app, document)
 
     await app.listen(1605)
 }

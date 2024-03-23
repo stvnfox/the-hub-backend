@@ -23,7 +23,6 @@ model User {
 
 model ProjectUser {
   id        Int     @default(autoincrement())
-  role      Role    @default(MEMBER)
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
   user      User    @relation(fields: [userId], references: [id])

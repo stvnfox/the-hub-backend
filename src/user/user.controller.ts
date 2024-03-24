@@ -1,4 +1,4 @@
-import { Body, Controller, Get, UseGuards } from "@nestjs/common"
+import { Controller, Get, Query, UseGuards } from "@nestjs/common"
 import { ApiCookieAuth, ApiTags } from "@nestjs/swagger"
 import { UserService } from "./user.service"
 import { JwtAuthGuard } from "src/auth/utils/Guards"
@@ -9,11 +9,19 @@ import { GetUserDto } from "src/projects/dto/user.dto"
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    //api/user/get/
-    @Get("get")
+    //api/user/get/id
+    @Get("get/id")
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
-    async getByEmail(@Body() params: GetUserDto) {
-        return this.userService.getByEmail(params.email)
+    async getUserId(@Query("email") email: string) {
+        return this.userService.getUserId(email)
+    }
+
+    //api/user/get/projects
+    @Get("get/projects")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    async getUserProjects(@Query("email") email: string) {
+        return this.userService.getUserProjects(email)
     }
 }

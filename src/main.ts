@@ -24,6 +24,7 @@ async function bootstrap() {
         .setTitle("The Hub")
         .setDescription("The Hub API description")
         .setVersion("0.1")
+        .addCookieAuth("access_token")
         .build()
 
     const document = SwaggerModule.createDocument(app, config)

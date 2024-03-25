@@ -17,8 +17,8 @@ model User {
   id       String        @id @db.Uuid
   email    String        @unique @db.VarChar(255)
   name     String        @db.VarChar(255)
-  projects ProjectUser[] 
-  todos    Todo[]        @relation("Todos")
+  projects ProjectUser[]
+  tasks    Task[]        @relation("Tasks")
 }
 
 model ProjectUser {
@@ -43,24 +43,33 @@ model Project {
   description String?
   published   Boolean       @default(false)
   members     ProjectUser[]
-  todos       Todo[]
+  tasks       Task[]
 }
 
-// TODO: Change dummy todo model
-model Todo {
-  id        Int        @id @default(autoincrement())
-  title     String
-  content   String?
-  status    TodoStatus @default(NEW)
-  author    User?      @relation("Todos", fields: [authorId], references: [id])
-  authorId  String?    @db.Uuid
-  project   Project?   @relation(fields: [projectId], references: [id])
-  projectId Int?
+//TODO: Must haves: Add comments
+//TODO: Nice to haves: Due date, attachments and iterations
+model Task {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus     @default(NEW)
+  priority    PriorityStatus @default(NORMAL)
+  assignee    User?          @relation("Tasks", fields: [assigneeId], references: [id])
+  assigneeId  String?        @db.Uuid
+  project     Project?       @relation(fields: [projectId], references: [id])
+  projectId   Int?
 }
 
-enum TodoStatus {
+enum TaskStatus {
   NEW
   ACTIVE
   COMPLETED
   FEEDBACK
+}
+
+enum PriorityStatus {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }

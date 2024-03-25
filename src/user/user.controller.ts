@@ -14,7 +14,7 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getUserId(@Query("email") email: string) {
         try {
-            await this.userService.getUserId(email)
+            return await this.userService.getUserId(email)
         } catch (error) {
             throw new HttpException(
                 {
@@ -35,7 +35,7 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getUserProjects(@Query("email") email: string) {
         try {
-            await this.userService.getUserProjects(email)
+            return await this.userService.getUserProjects(email)
         } catch (error) {
             throw new HttpException(
                 {

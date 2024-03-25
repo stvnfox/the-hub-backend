@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common"
 import { Prisma } from "@prisma/client"
-import { todo } from "node:test"
 import { DatabaseService } from "src/database/database.service"
 
 @Injectable()
@@ -20,7 +19,7 @@ export class ProjectsService {
 
         const project = await this.databaseService.project.findUnique({
             where: { id },
-            include: { members: true, todos: true },
+            include: { members: true, tasks: true },
         })
 
         const result = {
@@ -29,13 +28,14 @@ export class ProjectsService {
             description: project.description,
             published: project.published,
             members: project.members.map((member) => member.userId),
-            todos: project.todos.map((todo) => {
+            tasks: project.tasks.map((task) => {
                 return {
-                    id: todo.id,
-                    title: todo.title,
-                    description: todo.content,
-                    status: todo.status,
-                    assignedTo: todo.authorId,
+                    id: task.id,
+                    title: task.title,
+                    description: task.description,
+                    status: task.status,
+                    priority: task.priority,
+                    assignee: task.assigneeId,
                 }
             }),
         }

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { Prisma } from "@prisma/client"
+import { todo } from "node:test"
 import { DatabaseService } from "src/database/database.service"
 
 @Injectable()
@@ -11,11 +12,35 @@ export class ProjectsService {
     }
 
     async getById(id: number) {
-        const projectExists = await this.databaseService.project.findUnique({ where: { id } })
+        const projectExists = await this.databaseService.project.findUnique({
+            where: { id },
+        })
 
         if (!projectExists) throw { message: "Project not found", code: 400 }
 
-        return projectExists
+        const project = await this.databaseService.project.findUnique({
+            where: { id },
+            include: { members: true, todos: true },
+        })
+
+        const result = {
+            id: project.id,
+            title: project.title,
+            description: project.description,
+            published: project.published,
+            members: project.members.map((member) => member.userId),
+            todos: project.todos.map((todo) => {
+                return {
+                    id: todo.id,
+                    title: todo.title,
+                    description: todo.content,
+                    status: todo.status,
+                    assignedTo: todo.authorId,
+                }
+            }),
+        }
+
+        return result
     }
 
     async update(id: number, data: Prisma.ProjectUpdateInput) {

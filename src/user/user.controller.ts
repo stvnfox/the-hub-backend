@@ -1,8 +1,7 @@
-import { Controller, Get, Query, UseGuards } from "@nestjs/common"
+import { Controller, Get, HttpException, HttpStatus, Query, UseGuards } from "@nestjs/common"
 import { ApiCookieAuth, ApiTags } from "@nestjs/swagger"
 import { UserService } from "./user.service"
 import { JwtAuthGuard } from "src/auth/utils/Guards"
-import { GetUserDto } from "src/projects/dto/user.dto"
 
 @Controller("user")
 @ApiTags("User")
@@ -14,7 +13,20 @@ export class UserController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     async getUserId(@Query("email") email: string) {
-        return this.userService.getUserId(email)
+        try {
+            await this.userService.getUserId(email)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "User not found",
+                },
+                HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
     }
 
     //api/user/get/projects
@@ -22,6 +34,19 @@ export class UserController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     async getUserProjects(@Query("email") email: string) {
-        return this.userService.getUserProjects(email)
+        try {
+            await this.userService.getUserProjects(email)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "User not found",
+                },
+                HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
     }
 }

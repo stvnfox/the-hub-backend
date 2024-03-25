@@ -6,8 +6,24 @@ import { DatabaseService } from "src/database/database.service"
 export class ProjectsService {
     constructor(private readonly databaseService: DatabaseService) {}
 
-    async create(project: Prisma.ProjectCreateInput) {
-        return await this.databaseService.project.create({ data: project })
+    async create(data: Prisma.ProjectCreateInput) {
+        return await this.databaseService.project.create({ data })
+    }
+
+    async getById(id: number) {
+        const projectExists = await this.databaseService.project.findUnique({ where: { id } })
+
+        if (!projectExists) throw { message: "Project not found", code: 400 }
+
+        return projectExists
+    }
+
+    async update(id: number, data: Prisma.ProjectUpdateInput) {
+        const projectExists = await this.databaseService.project.findUnique({ where: { id } })
+
+        if (!projectExists) throw { message: "Project not found", code: 400 }
+
+        return await this.databaseService.project.update({ where: { id }, data })
     }
 
     async remove(id: number) {
@@ -21,16 +37,4 @@ export class ProjectsService {
     async addUser(data: Prisma.ProjectUserCreateManyInput) {
         return await this.databaseService.projectUser.create({ data })
     }
-
-    // findAll() {
-    //   return `This action returns all projects`;
-    // }
-
-    // findOne(id: number) {
-    //   return `This action returns a #${id} project`;
-    // }
-
-    // update(id: number, updateProjectDto: UpdateProjectDto) {
-    //   return `This action updates a #${id} project`;
-    // }
 }

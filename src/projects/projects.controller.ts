@@ -28,16 +28,38 @@ export class ProjectsController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     @ApiBody({ type: CreateProjectDto, description: "The data of the project to create." })
-    async create(@Body() project: Prisma.ProjectCreateInput, @Body() user: { id: string }) {
-        const projectResponse = await this.projectsService.create(project)
+    async create(@Body() data: Prisma.ProjectCreateInput, @Body() user: { id: string }) {
+        const projectResponse = await this.projectsService.create(data)
 
-        if (!projectResponse) return null
+        if (!projectResponse)
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Creating project failed",
+                },
+                HttpStatus.BAD_REQUEST,
+                {
+                    cause: "Creating project failed",
+                }
+            )
 
-        const response = await this.projectsService.addUser({
-            projectId: projectResponse.id,
-            userId: user.id,
-        })
-        return response || null
+        try {
+            this.projectsService.addUser({
+                projectId: projectResponse.id,
+                userId: user.id,
+            })
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Creating project failed",
+                },
+                HttpStatus.BAD_REQUEST,
+                {
+                    cause: error,
+                }
+            )
+        }
     }
 
     //api/projects/add-user
@@ -46,25 +68,70 @@ export class ProjectsController {
     @UseGuards(JwtAuthGuard)
     @ApiBody({ type: AddUserDto, description: "The data needed to add somebody to a project." })
     async addUser(@Body() data: AddUserDto) {
-        const response = await this.projectsService.addUser(data)
-
-        return response || null
+        try {
+            await this.projectsService.addUser(data)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Adding user to the project failed",
+                },
+                HttpStatus.BAD_REQUEST,
+                {
+                    cause: error,
+                }
+            )
+        }
     }
-    // @Get("get/:id")
-    // findOne(@Param("id") id: string) {
-    //     return this.projectsService.findOne(+id)
-    // }
 
-    // @Patch("update/:id")
-    // update(@Param("id") id: string, @Body() project: Prisma.ProjectCreateInput) {
-    //     return this.projectsService.update(+id, project)
-    // }
+    //api/projects/get/:id
+    @Get("get/:id")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    async getById(@Param("id") id: string) {
+        try {
+            return await this.projectsService.getById(+id)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "Project not found",
+                },
+                HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
+
+    //api/projects/update/:id
+    @Patch("update/:id")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiBody({ type: CreateProjectDto, description: "The data of the project to update." })
+    async update(@Param("id") id: string, @Body() data: Prisma.ProjectCreateInput) {
+        try {
+            await this.projectsService.update(+id, data)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "Updating project failed",
+                },
+                HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
 
     //api/projects/remove/:id
     @Delete("remove/:id")
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
-    async remove(@Param("id") id: string) {
+    async remove(@Param("id") id: number) {
         try {
             await this.projectsService.remove(+id)
         } catch (error) {

@@ -21,6 +21,7 @@ export class JwtAuthGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest()
         const token = this.extractTokenFromHeader(request)
+
         if (!token) {
             throw new UnauthorizedException()
         }
@@ -37,7 +38,8 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
-        const [token] = request.headers.cookie?.split("access_token=")[1].split(";")
-        return token || undefined
+        const cookie = request.headers.cookie?.split("access_token=")[1].split(";")
+
+        if (cookie) return cookie[0]
     }
 }

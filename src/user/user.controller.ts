@@ -54,7 +54,7 @@ export class UserController {
     @Get("get/tasks")
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
-    async getUseTasks(@Query("email") email: string) {
+    async getUserTasks(@Query("email") email: string) {
         try {
             return await this.userService.getUserTasks(email)
         } catch (error) {

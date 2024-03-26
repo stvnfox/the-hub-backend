@@ -47,7 +47,7 @@ model Project {
 }
 
 //TODO: Must haves: Add comments
-//TODO: Nice to haves: Due date, attachments and iterations
+//TODO: Nice to haves: Due date, attachments and iterations, created/updated by
 model Task {
   id          Int            @id @default(autoincrement())
   title       String
@@ -56,8 +56,8 @@ model Task {
   priority    PriorityStatus @default(NORMAL)
   assignee    User?          @relation("Tasks", fields: [assigneeId], references: [id])
   assigneeId  String?        @db.Uuid
-  project     Project?       @relation(fields: [projectId], references: [id])
-  projectId   Int?
+  project     Project       @relation(fields: [projectId], references: [id])
+  projectId   Int
 }
 
 enum TaskStatus {

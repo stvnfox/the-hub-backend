@@ -29,5 +29,21 @@ export class UserService {
         })
     }
 
-    //TODO: get user tasks
+    async getUserTasks(email: string) {
+        const user = await this.databaseService.user.findUnique({
+            where: { email },
+            include: { tasks: true },
+        })
+
+        return user.tasks.map((task) => {
+            return {
+                id: task.id,
+                title: task.title,
+                description: task.description,
+                status: task.status,
+                priority: task.priority,
+                project: task.projectId,
+            }
+        })
+    }
 }

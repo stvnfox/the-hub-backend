@@ -1,18 +1,5 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    HttpException,
-    HttpStatus,
-    Req,
-    UseGuards,
-} from "@nestjs/common"
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, UseGuards } from "@nestjs/common"
 import { ApiBody, ApiCookieAuth, ApiTags } from "@nestjs/swagger"
-import { Prisma } from "@prisma/client"
 import { ProjectsService } from "./projects.service"
 import { CreateProjectDto } from "./dto/create.dto"
 import { AddUserDto } from "./dto/user.dto"
@@ -28,7 +15,7 @@ export class ProjectsController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     @ApiBody({ type: CreateProjectDto, description: "The data of the project to create." })
-    async create(@Body() data: Prisma.ProjectCreateInput, @Body() user: { id: string }) {
+    async create(@Body() data: CreateProjectDto, @Body() user: { id: string }) {
         const projectResponse = await this.projectsService.create(data)
 
         if (!projectResponse)
@@ -110,7 +97,7 @@ export class ProjectsController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     @ApiBody({ type: CreateProjectDto, description: "The data of the project to update." })
-    async update(@Param("id") id: string, @Body() data: Prisma.ProjectCreateInput) {
+    async update(@Param("id") id: string, @Body() data: CreateProjectDto) {
         try {
             await this.projectsService.update(+id, data)
         } catch (error) {

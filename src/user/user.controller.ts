@@ -49,4 +49,25 @@ export class UserController {
             )
         }
     }
+
+    //api/user/get/tasks
+    @Get("get/tasks")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    async getUseTasks(@Query("email") email: string) {
+        try {
+            return await this.userService.getUserTasks(email)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "User not found",
+                },
+                HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
 }

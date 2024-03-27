@@ -24,7 +24,6 @@ export class AuthController {
             displayName: request.user.name,
         })
 
-        // @ts-ignore
         response.cookie("access_token", token, {
             maxAge: 2592000000,
             sameSite: true,

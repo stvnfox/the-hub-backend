@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { DatabaseService } from "src/database/database.service"
 import { CreateTaskDto } from "./dto/create.dto"
 import { ChangeAssigneeDto } from "./dto/changeAssignee.dto"
+import { UpdateTaskDto } from "./dto/update.dto"
 
 @Injectable()
 export class TasksService {
@@ -31,6 +32,24 @@ export class TasksService {
         return await this.databaseService.task.findUnique({
             where: {
                 id,
+            },
+        })
+    }
+
+    async update(data: UpdateTaskDto) {
+        return await this.databaseService.task.update({
+            where: {
+                id: data.id,
+            },
+            data: {
+                title: data.title,
+                description: data.description,
+                status: data.status,
+                assignee: {
+                    connect: {
+                        email: data.assignee,
+                    },
+                },
             },
         })
     }

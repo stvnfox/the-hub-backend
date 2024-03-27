@@ -1,9 +1,10 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from "@nestjs/common"
 import { ApiBody, ApiCookieAuth, ApiTags } from "@nestjs/swagger"
+import { JwtAuthGuard } from "src/auth/utils/Guards"
 import { CreateTaskDto } from "./dto/create.dto"
 import { ChangeAssigneeDto } from "./dto/changeAssignee.dto"
+import { UpdateTaskDto } from "./dto/update.dto"
 import { TasksService } from "./tasks.service"
-import { JwtAuthGuard } from "src/auth/utils/Guards"
 
 interface CreateTaskModel {
     title: string
@@ -54,6 +55,28 @@ export class TasksController {
                     message: "Task not found",
                 },
                 HttpStatus.NOT_FOUND,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
+
+    //api/tasks/update/:id
+    @Patch("update/:id")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiBody({ type: UpdateTaskDto, description: "The data needed to change task assignee." })
+    async update(@Body() data: UpdateTaskDto) {
+        try {
+            await this.tasksService.update(data)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Updating task failed",
+                },
+                HttpStatus.BAD_REQUEST,
                 {
                     cause: error,
                 }

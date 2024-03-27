@@ -45,6 +45,7 @@ export class TasksService {
                 title: data.title,
                 description: data.description,
                 status: data.status,
+                priority: data.priority,
                 assignee: {
                     connect: {
                         email: data.assignee,

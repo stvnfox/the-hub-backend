@@ -15,7 +15,7 @@ export class UpdateTaskDto {
     status: TaskStatus
 
     @ApiProperty({ default: PriorityStatus.NORMAL, description: "What is the priority of the task" })
-    priority: string
+    priority: PriorityStatus
 
     @ApiProperty({ required: false, description: "The email of the user assigned to the task" })
     assignee: string

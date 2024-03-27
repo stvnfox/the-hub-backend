@@ -40,4 +40,14 @@ export class AuthController {
     user() {
         return { msg: "Authenticated" }
     }
+
+    //api/auth/logout
+    @Get("logout")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    logout(@Res() response: Response) {
+        response.clearCookie("access_token")
+
+        return response.status(HttpStatus.OK).json({ msg: "Logged out" })
+    }
 }

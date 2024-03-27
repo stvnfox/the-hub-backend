@@ -30,6 +30,7 @@ export class AuthController {
             secure: false,
         })
 
+        // @ts-ignore
         return response.status(HttpStatus.OK).json(token)
     }
 
@@ -46,8 +47,10 @@ export class AuthController {
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
     logout(@Res() response: Response) {
+        // @ts-ignore
         response.clearCookie("access_token")
 
+        // @ts-ignore
         return response.status(HttpStatus.OK).json({ msg: "Logged out" })
     }
 }

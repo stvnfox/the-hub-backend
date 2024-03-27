@@ -27,6 +27,14 @@ export class TasksService {
         })
     }
 
+    async getTaskById(id: number) {
+        return await this.databaseService.task.findUnique({
+            where: {
+                id,
+            },
+        })
+    }
+
     async changeAssignee(data: ChangeAssigneeDto) {
         return await this.databaseService.task.update({
             where: {

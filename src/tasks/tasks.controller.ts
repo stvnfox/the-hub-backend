@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Patch, Post, UseGuards } from "@nestjs/common"
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from "@nestjs/common"
 import { ApiBody, ApiCookieAuth, ApiTags } from "@nestjs/swagger"
 import { CreateTaskDto } from "./dto/create.dto"
 import { ChangeAssigneeDto } from "./dto/changeAssignee.dto"
@@ -33,6 +33,27 @@ export class TasksController {
                     message: "Adding user to the project failed",
                 },
                 HttpStatus.BAD_REQUEST,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
+
+    //api/tasks/get/id
+    @Get("get/:id")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    async getTaskById(@Param("id") id: number) {
+        try {
+            return await this.tasksService.getTaskById(+id)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    message: "Task not found",
+                },
+                HttpStatus.NOT_FOUND,
                 {
                     cause: error,
                 }

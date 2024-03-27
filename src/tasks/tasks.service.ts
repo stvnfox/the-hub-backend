@@ -69,4 +69,12 @@ export class TasksService {
             },
         })
     }
+
+    async remove(id: number) {
+        return await this.databaseService.task.delete({
+            where: {
+                id,
+            },
+        })
+    }
 }

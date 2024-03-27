@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from "@nestjs/common"
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from "@nestjs/common"
 import { ApiBody, ApiCookieAuth, ApiTags } from "@nestjs/swagger"
 import { JwtAuthGuard } from "src/auth/utils/Guards"
 import { CreateTaskDto } from "./dto/create.dto"
@@ -47,7 +47,22 @@ export class TasksController {
     @UseGuards(JwtAuthGuard)
     async getTaskById(@Param("id") id: number) {
         try {
-            return await this.tasksService.getTaskById(+id)
+            const response = await this.tasksService.getTaskById(+id)
+
+            if (!response) {
+                throw new HttpException(
+                    {
+                        status: HttpStatus.NOT_FOUND,
+                        message: "Task not found",
+                    },
+                    HttpStatus.NOT_FOUND,
+                    {
+                        cause: "Task not found",
+                    }
+                )
+            }
+
+            return response
         } catch (error) {
             throw new HttpException(
                 {
@@ -97,6 +112,26 @@ export class TasksController {
                 {
                     status: HttpStatus.BAD_REQUEST,
                     message: "Changing assignee failed",
+                },
+                HttpStatus.BAD_REQUEST,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
+
+    @Delete("remove/:id")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    async remove(@Param("id") id: number) {
+        try {
+            await this.tasksService.remove(+id)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Removing task failed",
                 },
                 HttpStatus.BAD_REQUEST,
                 {

@@ -29,11 +29,13 @@ export class TasksService {
     }
 
     async getTaskById(id: number) {
-        return await this.databaseService.task.findUnique({
-            where: {
-                id,
-            },
+        const taskExists = await this.databaseService.task.findUnique({
+            where: { id },
         })
+
+        if (!taskExists) throw { message: "Task not found", code: 400 }
+
+        return taskExists
     }
 
     async update(data: UpdateTaskDto) {

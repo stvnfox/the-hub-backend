@@ -47,22 +47,7 @@ export class TasksController {
     @UseGuards(JwtAuthGuard)
     async getTaskById(@Param("id") id: number) {
         try {
-            const response = await this.tasksService.getTaskById(+id)
-
-            if (!response) {
-                throw new HttpException(
-                    {
-                        status: HttpStatus.NOT_FOUND,
-                        message: "Task not found",
-                    },
-                    HttpStatus.NOT_FOUND,
-                    {
-                        cause: "Task not found",
-                    }
-                )
-            }
-
-            return response
+            return await this.tasksService.getTaskById(+id)
         } catch (error) {
             throw new HttpException(
                 {

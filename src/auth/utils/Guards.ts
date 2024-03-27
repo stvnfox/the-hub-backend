@@ -1,8 +1,7 @@
-import { ExecutionContext, Injectable, Inject, UnauthorizedException, CanActivate } from "@nestjs/common"
+import { ExecutionContext, Injectable, UnauthorizedException, CanActivate } from "@nestjs/common"
 import { Request } from "express"
 import { AuthGuard } from "@nestjs/passport"
 import { JwtService } from "@nestjs/jwt"
-import { Reflector } from "@nestjs/core"
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard("google") {
@@ -38,9 +37,11 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
+        // @ts-ignore
         const hasAccessToken = request.headers.cookie?.includes("access_token")
 
         if (hasAccessToken) {
+            // @ts-ignore
             const [token] = request.headers.cookie?.split("access_token=")[1].split(";")
 
             return token

@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus, Inject, Req, Res, UseGuards } from "@nestjs/common"
 import { ApiCookieAuth, ApiTags } from "@nestjs/swagger"
-import { Response, Request } from "express"
+import { Response } from "express"
 import { GoogleAuthGuard, JwtAuthGuard } from "./utils/Guards"
 import { AuthService } from "./auth.service"
 
@@ -47,10 +47,11 @@ export class AuthController {
     @Get("logout")
     @ApiCookieAuth()
     @UseGuards(JwtAuthGuard)
-    logout(@Res() res: Response) {
+    logout(@Res() response: Response) {
         // @ts-ignore
-        res.clearCookie("access_token")
+        response.clearCookie("access_token")
 
-        return res.status(HttpStatus.OK).json({ msg: "Logged out" })
+        // @ts-ignore
+        return response.status(HttpStatus.OK).json({ msg: "Logged out" })
     }
 }

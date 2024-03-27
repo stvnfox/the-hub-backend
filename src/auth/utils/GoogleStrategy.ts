@@ -9,9 +9,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: process.env.GOOGLE_REDIRECT_URI,
+            callbackUrl: process.env.GOOGLE_REDIRECT_URI,
             scope: ["email", "profile"],
         })
+        console.log(process.env.GOOGLE_REDIRECT_URI)
     }
 
     async validate(accessToken: string, refreshToken: string, profile: Profile) {

@@ -1,6 +1,7 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UseGuards } from "@nestjs/common"
+import { Body, Controller, HttpException, HttpStatus, Patch, Post, UseGuards } from "@nestjs/common"
 import { ApiBody, ApiCookieAuth, ApiTags } from "@nestjs/swagger"
 import { CreateTaskDto } from "./dto/create.dto"
+import { ChangeAssigneeDto } from "./dto/changeAssignee.dto"
 import { TasksService } from "./tasks.service"
 import { JwtAuthGuard } from "src/auth/utils/Guards"
 
@@ -30,6 +31,28 @@ export class TasksController {
                 {
                     status: HttpStatus.BAD_REQUEST,
                     message: "Adding user to the project failed",
+                },
+                HttpStatus.BAD_REQUEST,
+                {
+                    cause: error,
+                }
+            )
+        }
+    }
+
+    //api/tasks/change-assignee
+    @Patch("change-assignee")
+    @ApiCookieAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiBody({ type: ChangeAssigneeDto, description: "The data needed to change task assignee." })
+    async changeAssignee(@Body() data: ChangeAssigneeDto) {
+        try {
+            await this.tasksService.changeAssignee(data)
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: "Changing assignee failed",
                 },
                 HttpStatus.BAD_REQUEST,
                 {

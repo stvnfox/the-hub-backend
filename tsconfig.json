@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
+        "lib": ["ESNext"],
         "declaration": true,
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "target": "ES2021",
+        "target": "ESNext",
         "sourceMap": true,
         "outDir": "./dist",
         "baseUrl": "./",
@@ -17,6 +18,7 @@
         "strictBindCallApply": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "moduleResolution": "node"
     }
 }
